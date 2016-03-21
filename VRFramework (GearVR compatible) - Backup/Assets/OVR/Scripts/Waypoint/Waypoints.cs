@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public class Waypoints : MonoBehaviour {
 
+    public AudioClip Acceleration;
+    public AudioClip AccelerationPeak;
+
+    private AudioSource source;
+
 	private Transform CameraTransform;
 
 	private Vector3 Direction, OldDirection;
@@ -20,6 +25,8 @@ public class Waypoints : MonoBehaviour {
 
 	private bool updateWaypoint = true;
 
+    private bool playNext = false;
+
 	float accelaration = 50.0f;
 	float speedLimit = 1000.0f;
 	float currentSpeed = 0.0f;
@@ -29,13 +36,28 @@ public class Waypoints : MonoBehaviour {
 		waypointIndex = 0;
 		GetWayPoint ();
 		CameraTransform = GameObject.FindGameObjectWithTag ("MainCamera").transform;
+        source = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		UpdateRotate ();
 		Move ();
+        UpdateSound();
 	}
+
+    void UpdateSound()
+    {
+        if (!playNext)
+        {
+            playNext = true;
+            source.PlayOneShot(Acceleration, 1f);
+        }
+        if (!source.isPlaying)
+        {
+            source.PlayOneShot(AccelerationPeak, 1f);
+        }
+    }
 
 	public void OnTriggerEnter(Collider other)
 	{
