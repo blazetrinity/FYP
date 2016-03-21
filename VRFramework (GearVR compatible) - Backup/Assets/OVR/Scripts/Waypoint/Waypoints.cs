@@ -14,8 +14,6 @@ public class Waypoints : MonoBehaviour {
 
 	public int waypointIndex;
 
-	private GameObject lastCollidedGameObject;
-
 	private Quaternion CameraRotation, ObjectRotation;
 
 	float rotationDamping = 6.0f;
@@ -30,7 +28,6 @@ public class Waypoints : MonoBehaviour {
 	void Start () {
 		waypointIndex = 0;
 		GetWayPoint ();
-		lastCollidedGameObject = null;
 		CameraTransform = GameObject.FindGameObjectWithTag ("MainCamera").transform;
 	}
 	
@@ -42,9 +39,8 @@ public class Waypoints : MonoBehaviour {
 
 	public void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject != lastCollidedGameObject) {
+		if (other.CompareTag("Waypoint")) {
 			ChangeNextWaypoint ();
-			lastCollidedGameObject = other.gameObject;
 		}
 	}
 		
@@ -54,11 +50,11 @@ public class Waypoints : MonoBehaviour {
 
 			if (updateWaypoint) {
 				transform.rotation = Quaternion.Lerp (transform.rotation, ObjectRotation, Time.deltaTime * rotationDamping);
-				CameraTransform.rotation = Quaternion.Lerp (CameraTransform.rotation, CameraRotation, Time.deltaTime * rotationDamping);
+				//CameraTransform.rotation = Quaternion.Lerp (CameraTransform.rotation, CameraRotation, Time.deltaTime * rotationDamping);
 
 				if (Quaternion.Angle (transform.rotation, ObjectRotation) < 2.5f) {
 					transform.rotation = ObjectRotation;
-					CameraTransform.rotation = CameraRotation;
+					//CameraTransform.rotation = CameraRotation;
 					updateWaypoint = false;
 				}
 			}
@@ -80,7 +76,7 @@ public class Waypoints : MonoBehaviour {
 	{
 		OldDirection = Direction;
 
-		++waypointIndex;
+		waypointIndex++;
 
 		if (waypointIndex >= waypoints.Count) {
 			waypointIndex = 0;
@@ -105,14 +101,7 @@ public class Waypoints : MonoBehaviour {
 
 		float angleDifference = Mathf.DeltaAngle (angleA, angleB);
 
-		//Debug.Log ("Angle difference" + angleDifference);
-		//Debug.Log ("Transform angle" + transform.rotation.eulerAngles.y);
-		//Debug.Log ("Camera angle" + CameraTransform.rotation.eulerAngles.y);
-
-
 		CameraRotation = Quaternion.AngleAxis (CameraTransform.rotation.eulerAngles.y + angleDifference, Vector3.up);
-
-		//Debug.Log ("Camera supposed angle" + CameraRotation.eulerAngles.y);
 	}
 
 	void GetWayPoint()
