@@ -27,8 +27,8 @@ public class Waypoints : MonoBehaviour {
 
     private bool playNext = false;
 
-	float accelaration = 50.0f;
-	float speedLimit = 1000.0f;
+	float accelaration = 88.0f;
+	float speedLimit = 88.0f;
 	public float currentSpeed = 0.0f;
 
 	// Use this for initialization
